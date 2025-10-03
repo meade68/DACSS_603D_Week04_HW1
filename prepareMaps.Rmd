@@ -72,12 +72,17 @@ plot1_a
 ```{r}
 library(leaflet)
 # needs geographic CRS
-ddm_4326 <- st_transform(DOT_DENSITY, crs = 3035)
+
+
+DOT_DENSITY<- st_cast(DOT_DENSITY,'POINT' )
+
+ddm_4326 <- st_transform(DOT_DENSITY, crs = 4326)
+
 
 leaflet() %>%
   addTiles() %>%  # base map
   addCircleMarkers(data = ddm_4326,
-                   color="red",
+                   color="blue",
                    stroke=0,
                    radius = 0.01,
                    opacity = 0.1)
@@ -99,19 +104,23 @@ plot1_b
 # PSM - static
 
 ```{r}
+
+
+BASEMAP<-st_transform(BASEMAP, crs = 4326)
+
 plot2_a=ggplot() + theme_light() +
   #base
-  geom_sf(data = africa,fill="white",color="grey80") +
+  geom_sf(data = BASEMAP,fill="white",color="grey80") +
   # layer
-  geom_sf(data=africaPopu_psm,
+  geom_sf(data=PROP_SYMBOL,
           shape=20,
-          aes(size=population/1000,color=factor(population_outlier)))+
+          aes(size=size))+
   scale_size_area(
-    name = "Population (x1,000)", # Name for the legend
+    name = "Mobiles per Person", # Name for the legend
     max_size = 20) +       # This defines the maximum *radius*
   guides(color="none") + 
   
-  coord_sf(datum = st_crs(africa)) + 
+  coord_sf(datum = st_crs(BASEMAP)) + 
   # custom X and Y axes
   scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
   scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
@@ -124,7 +133,7 @@ plot2_a
 
 ```{r}
 # CRS for leaflet
-psm_4326 <- st_transform(africaPopu_psm, crs = 4326)
+psm_4326 <- st_transform(PROP_SYMBOL, crs = 4326)
 
 
 plot2_b=leaflet() %>%
@@ -144,9 +153,9 @@ plot2_b
 ```{r}
 plot3_a=ggplot() + theme_light() +
   #base
-  geom_sf(data=africa,
-          aes(fill=population_density_FJ5_cat))+
-  coord_sf(datum = st_crs(africa)) +
+  geom_sf(data=choro_4326,
+          aes(fill=mobiles_pcapita_FJ5_cat))+
+  coord_sf(datum = st_crs(BASEMAP)) +
   scale_fill_brewer(direction = 1,palette = 'RdBu') + 
   scale_x_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
   scale_y_continuous(labels = label_number(scale = 1/1000, suffix = " km")) +
@@ -159,12 +168,12 @@ plot3_a
 # CHORO - interactive
 
 ```{r}
-choro_4326 <- st_transform(africa, crs = 4326)
+choro_4326 <- st_transform(CHOROPLETH, crs = 4326)
 #needed
-choro_4326$population_density_FJ5_cat=ordered(choro_4326$population_density_FJ5_cat)
+choro_4326$mobiles_pcapita_FJ5_cat=ordered(choro_4326$mobiles_pcapita_FJ5_cat)
 # First, create a color palette for your categorical variable
 pal <- colorFactor(palette = "RdBu",
-                   domain = choro_4326$population_density_FJ5_cat,
+                   domain = choro_4326$mobiles_pcapita_FJ5_cat,
                    ordered = T,
                    reverse = F)
 
@@ -172,7 +181,7 @@ leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron)  %>% 
   addPolygons(
     data = choro_4326,
-    fillColor = ~pal(population_density_FJ5_cat),
+    fillColor = ~pal(mobiles_pcapita_FJ5_cat),
     fillOpacity = 0.7,
     color = "white",
     weight = 1,
@@ -180,13 +189,13 @@ leaflet() %>%
     ) %>%
   addLegend(
     pal = pal,
-    values = choro_4326$population_density_FJ5_cat,
+    values = choro_4326$mobiles_pcapita_FJ5_cat,
     )
 ```
 
 ```{r}
 # Calculate the center of Africa for the home button
-africa_center <- st_bbox(choro_4326) %>% 
+europe_center <- st_bbox(choro_4326) %>% 
   as.vector() %>% 
   {c(mean(c(.[1], .[3])), mean(c(.[2], .[4])))}  # Calculate center coordinates
 
@@ -195,30 +204,30 @@ plot3_b=leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron)  %>% 
 addPolygons(
     data = choro_4326,
-    fillColor = ~pal(population_density_FJ5_cat),
+    fillColor = ~pal(mobiles_pcapita_FJ5_cat),
     fillOpacity = 0.7,
     color = "white",
     weight = 1,
     opacity = 1,
     label = lapply(
       paste("<strong>", choro_4326$Country, "</strong><br>",
-            "Density: ", choro_4326$population_density),
+            "Density: ", choro_4326$mobiles_pcapita_FJ5_cat),
       htmltools::HTML
     )
   ) %>%
   addLegend(
     pal = pal,
-    values = choro_4326$population_density_FJ5_cat,
+    values = choro_4326$mobiles_pcapita_FJ5_cat,
     opacity = 0.7,
-    title = "Population Density",
+    title = "Mobiles Density",
     position = "bottomright"
   )%>%
   addEasyButton(
     easyButton(
       icon = "fa-home", 
-      title = "Reset to Africa View",
+      title = "Reset to Central Europe View",
       onClick = JS(sprintf("function(btn, map){ map.setView([%f, %f], 3); }", 
-                          africa_center[2], africa_center[1]))
+                          europe_center[2], europe_center[1]))
     )
   )
 plot3_b
