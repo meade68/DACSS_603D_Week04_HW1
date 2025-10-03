@@ -1,0 +1,66 @@
+---
+title: "THEMATICS - tabs"
+output:
+  flexdashboard::flex_dashboard:
+    navbar:
+      - { icon: "fa-github", href: "https://github.com/DACSS-Spatial/The-Thematics", align: right }
+
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard) # always
+```
+
+## Sidebar {.sidebar}
+
+
+Mobile phone density in Europe is among the highest in the world. In many European countries, the number of active mobile subscriptions actually exceeds the population, meaning there are more SIM cards than people. Northern and Western Europe typically have the highest penetration rates, with countries like Finland, Sweden, and Germany showing near-universal adoption. Even in Eastern and Southern Europe, mobile access is widespread, with smartphones becoming the primary way people connect to the internet. This high density reflects Europe’s advanced telecom infrastructure and strong competition among service providers, which has driven down costs and boosted accessibility.
+
+
+
+
+
+
+
+
+## Column {.tabset .tabset-fade}
+
+
+### Dot-Density Map 1
+
+```{r}
+readRDS("plot1_a.rds")
+```
+
+
+### Dot-Density Map 2
+
+```{r}
+readRDS("plot1_b.rds")
+```
+
+### Proportional Symbols Map 1
+
+```{r}
+readRDS("plot2_a.rds")
+```
+
+### Proportional Symbols Map 2
+
+```{r}
+readRDS("plot2_b.rds")
+```
+
+
+### Choropleth 1
+
+```{r}
+readRDS("plot3_a.rds")
+```
+
+### Choropleth 2
+
+```{r}
+readRDS("plot3_b.rds")
+```
+
