@@ -31,20 +31,20 @@ The Repo that generated this dashboard can be found [here!](https://github.com/m
 ### Dot-Density Map
 
 ```{r}
-readRDS("plot1_b.rds")
+readRDS(url("https://github.com/meade68/DACSS_603D_Week04_HW1/raw/refs/heads/main/plot1_a.rds"))
 ```
 
 
 ### Proportional Symbols Map
 
 ```{r}
-readRDS("plot2_b.rds")
+readRDS(url("https://github.com/meade68/DACSS_603D_Week04_HW1/raw/refs/heads/main/plot2_b.rds"))
 ```
 
 
 ### Choropleth
 
 ```{r}
-readRDS("plot3_b.rds")
+readRDS(url("https://github.com/meade68/DACSS_603D_Week04_HW1/raw/refs/heads/main/plot3_b.rds"))
 ```
 
