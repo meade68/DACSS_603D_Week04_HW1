@@ -94,7 +94,7 @@ Almost the same:
 plot1_b=leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron)  %>%  # names in english
   addCircleMarkers(data = ddm_4326,
-                   color="red",
+                   color="blue",
                    stroke=0,
                    radius = 0.01,
                    opacity = 0.1)
